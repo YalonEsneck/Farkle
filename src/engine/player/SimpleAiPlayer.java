@@ -5,17 +5,17 @@ import java.util.concurrent.TimeUnit;
 import engine.DiceContainer;
 import engine.Game;
 import engine.Score;
-import output.Output;
+import ui.UserInterface;
 
 public class SimpleAiPlayer extends BasePlayer {
-  public SimpleAiPlayer(String name, Output output) {
-    super(name, output);
+  public SimpleAiPlayer(String name, UserInterface ui) {
+    super(name, ui);
   }
 
   public Game.PlayerRollChoice handleRoll(DiceContainer rolledDice) {
     DiceContainer selectedDice = new DiceContainer();
 
-    this.output.inf("Player " + this.getName() + " cast: " + rolledDice.toString());
+    this.ui.castDice(rolledDice);
     try {
       TimeUnit.MILLISECONDS.sleep(500);
     } catch (InterruptedException e) {
@@ -28,7 +28,7 @@ public class SimpleAiPlayer extends BasePlayer {
     rolledDice.add(Score.getNonScoringDice(selectedDice.getDice()));
     selectedDice.remove(rolledDice.getDice());
 
-    this.output.inf("Selected dice: " + selectedDice.toString());
+    this.ui.selectedDice(selectedDice);
     try {
       TimeUnit.MILLISECONDS.sleep(500);
     } catch (InterruptedException e) {
@@ -36,7 +36,7 @@ public class SimpleAiPlayer extends BasePlayer {
     }
     if ((rolledDice.size() == 0) || (rolledDice.size() > 3) || (score < 500 && rolledDice.size() >= 3)
         || (score < 300 && rolledDice.size() >= 2)) {
-      this.output.inf(this.getName() + ": `I'm going for another round.`");
+          this.ui.rollsAgain(this);
       try {
         TimeUnit.MILLISECONDS.sleep(500);
       } catch (InterruptedException e) {
@@ -44,7 +44,7 @@ public class SimpleAiPlayer extends BasePlayer {
       }
       return new Game.PlayerRollChoice(Game.PlayerRollChoice.Action.ROLL, selectedDice);
     }
-    this.output.inf(this.getName() + ": `I'll pass.`");
+    this.ui.passes(this);
     try {
       TimeUnit.MILLISECONDS.sleep(500);
     } catch (InterruptedException e) {

@@ -3,12 +3,12 @@ package engine;
 import java.util.List;
 
 import engine.player.PlayerInterface;
-import output.Output;
+import ui.UserInterface;
 
 public class Game {
   private List<PlayerInterface> players;
   private Integer maxScore;
-  private Output output;
+  private UserInterface ui;
 
   /**
    * Choice of a player on how to proceed with a roll. This includes a follow-up
@@ -40,15 +40,14 @@ public class Game {
     }
   }
 
-  public Game(List<PlayerInterface> players, Integer maxScore, Output output) {
+  public Game(List<PlayerInterface> players, Integer maxScore, UserInterface ui) {
     this.players = players;
     this.maxScore = maxScore;
-    this.output = output;
+    this.ui = ui;
   }
 
   public void run() {
-    this.output.inf("Playing 'till " + this.maxScore + ". Let's begin!");
-    this.output.inf();
+    this.ui.announceVictoryConditions(this.maxScore);
 
     this.prepareNewGame();
 
@@ -64,7 +63,7 @@ public class Game {
         }
 
         if (player.getScore() >= this.maxScore) {
-          this.output.announceVictor(player);
+          this.ui.announceVictor(player);
           break;
         }
       }
@@ -82,7 +81,7 @@ public class Game {
    * @return If human chose to quit.
    */
   private PlayerRollChoice playerTurn(PlayerInterface player) {
-    this.output.announceTurn(player);
+    this.ui.announceTurn(player);
 
     Shaker shaker = new Shaker();
 
@@ -109,7 +108,7 @@ public class Game {
       score += Score.getScore(choice.getSelectedDice().getDice());
 
       if (choice.getFollowUpAction() != PlayerRollChoice.Action.PASS) {
-        this.output.announceCurrentScore(score);
+        this.ui.announceCurrentScore(score);
       }
     } while (choice.getFollowUpAction() == PlayerRollChoice.Action.ROLL);
 
@@ -117,7 +116,7 @@ public class Game {
     if (choice.getSelectedDice().size() > 0) {
       player.addToScore(score);
     }
-    this.output.updateScoreboard(this.players);
+    this.ui.updateScoreboard(this.players);
 
     return choice;
   }
@@ -136,7 +135,6 @@ public class Game {
     }
 
     if (choice.getSelectedDice().size() < 1) {
-      this.output.war("Your turn is over now.");
       choice.setFollowUpAction(PlayerRollChoice.Action.PASS);
     }
 

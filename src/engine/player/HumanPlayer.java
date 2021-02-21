@@ -3,108 +3,67 @@ package engine.player;
 import engine.DiceContainer;
 import engine.Game;
 import engine.Score;
-import output.Output;
+import ui.UserInterface;
 
 public class HumanPlayer extends BasePlayer {
-  public HumanPlayer(String name, Output output) {
-    super(name, output);
+  public HumanPlayer(String name, UserInterface ui) {
+    super(name, ui);
   }
 
   public Game.PlayerRollChoice handleRoll(DiceContainer rolledDice) {
     DiceContainer selectedDice = new DiceContainer();
 
     if (Score.getScore(rolledDice.getDice()) > 0) {
-
-      String input = "";
       do {
-        this.output.inf("Cast dice: " + rolledDice.toString());
-        this.output.inf("Selected dice: " + selectedDice.toString() + " (DEBUG: "
-            + Integer.toString(Score.getScore(selectedDice.getDice())) + ")");
+        this.ui.castDice(rolledDice);
+        this.ui.selectedDice(selectedDice);
 
-        this.output.inf("Your choice (type `h` for help): ", false);
-        input = System.console().readLine();
-        this.output.inf();
-
-        Boolean removal = false;
-        if (input.length() > 0 && input.substring(0, 1).equals("!")) {
-          removal = true;
-          input = input.substring(1, input.length());
-        }
+        UserInterface.PlayerAction action = this.ui.promptForAction(rolledDice, selectedDice);
 
         DiceContainer nonScoringDice = new DiceContainer();
         nonScoringDice.add(Score.getNonScoringDice(selectedDice.getDice()));
 
-        switch (input) {
-          case "a":
-            selectedDice.add(rolledDice.getDice());
-            rolledDice.clear();
+        switch (action.getType()) {
+          case SELECT:
+            selectedDice.add(action.getSelectedDice());
+            rolledDice.remove(action.getSelectedDice());
             break;
 
-          case "h":
-            this.output.inf("Type in the face of the dice to select it.");
-            this.output.inf("Prepend with an exclamation mark to unselect it.");
-            this.output.inf("Special keys:");
-            this.output.inf(" a - Select all dice");
-            this.output.inf(" r - Roll");
-            this.output.inf(" f - Pass");
-            this.output.inf(" h - Show this help");
-            this.output.inf(" q - Forfeit game");
-            this.output.inf();
-            break;
-
-          case "r":
+          case ROLL:
             if (selectedDice.size() < 1) {
-              this.output.err("You must select at least one dice!");
+              this.ui.noDiceSelected();
             } else if (nonScoringDice.size() > 0) {
-              this.output.err("You must deselect all non-scoring dice: " + nonScoringDice);
+              this.ui.unselectNonScoringDice(nonScoringDice);
             } else {
               return new Game.PlayerRollChoice(Game.PlayerRollChoice.Action.ROLL, selectedDice);
             }
             break;
 
-          case "p":
+          case PASS:
             if (selectedDice.size() > 0) {
               if (nonScoringDice.size() > 0) {
-                this.output.err("You must deselect all non-scoring dice: " + nonScoringDice);
+                this.ui.unselectNonScoringDice(nonScoringDice);
                 break;
               } else {
                 return new Game.PlayerRollChoice(Game.PlayerRollChoice.Action.PASS, selectedDice);
               }
             } else {
-              this.output.war("You did not select any dice. Are you sure you want to yield your turn? (y/n) ", false);
-              input = System.console().readLine();
-              if (input.equalsIgnoreCase("y")) {
+              if (this.ui.confirmYieldingTurn()) {
                 return new Game.PlayerRollChoice(Game.PlayerRollChoice.Action.PASS, selectedDice);
               } else {
                 break;
               }
             }
 
-          case "q":
+          case QUIT:
             return new Game.PlayerRollChoice(Game.PlayerRollChoice.Action.QUIT, selectedDice);
 
-          case "":
-            break;
-
           default:
-            try {
-              Integer pickedFace = Integer.parseInt(input);
-              DiceContainer activeContainer = removal ? selectedDice : rolledDice;
-              DiceContainer passiveContainer = removal ? rolledDice : selectedDice;
-
-              if (0 < activeContainer.getDice().stream().filter(element -> element.getFace() == pickedFace).count()) {
-                passiveContainer.add(activeContainer.pop(pickedFace));
-              } else {
-                this.output.err("Bad choice!");
-              }
-            } catch (NumberFormatException e) {
-              this.output.err("Bad choice!");
-            }
+            throw new RuntimeException("Unexpected player action type: " + action.getType());
         }
       } while (true);
     } else {
-      this.output.inf("Cast dice: " + rolledDice.toString());
-      this.output.err("Tough luck!");
+      this.ui.castDice(rolledDice);
       return new Game.PlayerRollChoice(Game.PlayerRollChoice.Action.PASS, selectedDice);
     }
   }

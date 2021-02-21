@@ -1,16 +1,16 @@
 package engine.player;
 
-import output.Output;
+import ui.UserInterface;
 
 public abstract class BasePlayer implements PlayerInterface {
   protected String name;
   protected Integer score;
-  protected Output output;
+  protected UserInterface ui;
 
-  public BasePlayer(String name, Output output) {
+  public BasePlayer(String name, UserInterface ui) {
     this.name = name;
     this.score = 0;
-    this.output = output;
+    this.ui = ui;
   }
 
   public void addToScore(Integer increment) {
