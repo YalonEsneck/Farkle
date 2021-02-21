@@ -1,7 +1,5 @@
 package engine.player;
 
-import engine.DiceContainer;
-import engine.Game;
 import output.Output;
 
 public abstract class BasePlayer implements PlayerInterface {
@@ -29,9 +27,5 @@ public abstract class BasePlayer implements PlayerInterface {
 
   public Integer getScore() {
     return this.score;
-  }
-
-  public Game.PlayerChoice handleRoll(DiceContainer rolledDice, DiceContainer selectedDice) {
-    return Game.PlayerChoice.Error;
   }
 }
