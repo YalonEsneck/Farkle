@@ -10,11 +10,9 @@ public class HumanPlayer extends BasePlayer {
     super(name, output);
   }
 
-  public Boolean isHuman() {
-    return true;
-  }
+  public Game.PlayerRollChoice handleRoll(DiceContainer rolledDice) {
+    DiceContainer selectedDice = new DiceContainer();
 
-  public Game.PlayerChoice handleRoll(DiceContainer rolledDice, DiceContainer selectedDice) {
     if (Score.getScore(rolledDice.getDice()) > 0) {
 
       String input = "";
@@ -60,7 +58,7 @@ public class HumanPlayer extends BasePlayer {
             } else if (nonScoringDice.size() > 0) {
               this.output.err("You must deselect all non-scoring dice: " + nonScoringDice);
             } else {
-              return Game.PlayerChoice.Roll;
+              return new Game.PlayerRollChoice(Game.PlayerRollChoice.Action.ROLL, selectedDice);
             }
             break;
 
@@ -70,20 +68,20 @@ public class HumanPlayer extends BasePlayer {
                 this.output.err("You must deselect all non-scoring dice: " + nonScoringDice);
                 break;
               } else {
-                return Game.PlayerChoice.Pass;
+                return new Game.PlayerRollChoice(Game.PlayerRollChoice.Action.PASS, selectedDice);
               }
             } else {
               this.output.war("You did not select any dice. Are you sure you want to yield your turn? (y/n) ", false);
               input = System.console().readLine();
               if (input.equalsIgnoreCase("y")) {
-                return Game.PlayerChoice.Pass;
+                return new Game.PlayerRollChoice(Game.PlayerRollChoice.Action.PASS, selectedDice);
               } else {
                 break;
               }
             }
 
           case "q":
-            return Game.PlayerChoice.Quit;
+            return new Game.PlayerRollChoice(Game.PlayerRollChoice.Action.QUIT, selectedDice);
 
           case "":
             break;
@@ -107,8 +105,7 @@ public class HumanPlayer extends BasePlayer {
     } else {
       this.output.inf("Cast dice: " + rolledDice.toString());
       this.output.err("Tough luck!");
+      return new Game.PlayerRollChoice(Game.PlayerRollChoice.Action.PASS, selectedDice);
     }
-
-    return Game.PlayerChoice.Error;
   }
 }

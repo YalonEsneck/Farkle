@@ -58,4 +58,13 @@ public class Cli implements Output {
   public void announceVictor(PlayerInterface player) {
     this.out("\033[32mPlayer " + player.getName() + " wins with a score of " + player.getScore() + "!\033[0m", true);
   }
+
+  public void announceTurn(PlayerInterface player) {
+    this.inf("It's player " + player.getName() + "'s turn.");
+    this.inf();
+  }
+
+  public void announceCurrentScore(Integer score) {
+    this.inf("Score so far: " + score);
+  }
 }

@@ -52,4 +52,11 @@ public class DiceContainer {
   public Integer size() {
     return this.dice.size();
   }
+
+  public DiceContainer clone() {
+    DiceContainer clone = new DiceContainer();
+    List<Dice> clonedDice = new ArrayList<>(this.dice);
+    clone.add(clonedDice);
+    return clone;
+  }
 }

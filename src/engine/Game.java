@@ -11,11 +11,34 @@ public class Game {
   private Output output;
 
   /**
-   * Choice of a player on how to proceed with a roll.
+   * Choice of a player on how to proceed with a roll. This includes a follow-up
+   * action and the selected dice.
    */
-  public enum PlayerChoice {
-    Error, Quit, Pass, Roll
-  };
+  public static class PlayerRollChoice {
+    public static enum Action {
+      QUIT, PASS, ROLL
+    };
+
+    private Action action;
+    private DiceContainer selectedDice;
+
+    public PlayerRollChoice(Action followUpAction, DiceContainer selectedDice) {
+      this.action = followUpAction;
+      this.selectedDice = selectedDice;
+    }
+
+    public void setFollowUpAction(Action newAction) {
+      this.action = newAction;
+    }
+
+    public Action getFollowUpAction() {
+      return this.action;
+    }
+
+    public DiceContainer getSelectedDice() {
+      return this.selectedDice;
+    }
+  }
 
   public Game(List<PlayerInterface> players, Integer maxScore, Output output) {
     this.players = players;
@@ -32,7 +55,7 @@ public class Game {
     Integer highestScore = 0;
     do {
       for (PlayerInterface player : this.players) {
-        if (this.playerTurn(player)) {
+        if (this.playerTurn(player).getFollowUpAction() == PlayerRollChoice.Action.QUIT) {
           return;
         }
 
@@ -58,52 +81,67 @@ public class Game {
    * @param player
    * @return If human chose to quit.
    */
-  private Boolean playerTurn(PlayerInterface player) {
-    this.output.inf("It's player " + player.getName() + "'s turn.");
-    this.output.inf();
+  private PlayerRollChoice playerTurn(PlayerInterface player) {
+    this.output.announceTurn(player);
 
     Shaker shaker = new Shaker();
-    DiceContainer selection = new DiceContainer();
 
     Integer score = 0;
-
-    PlayerChoice result = PlayerChoice.Roll;
+    PlayerRollChoice choice;
 
     do {
       if (shaker.getDice().isEmpty()) {
         shaker.generateNewDice();
       }
 
-      selection.clear();
       shaker.roll();
 
-      result = player.handleRoll(shaker, selection);
-      if (result == PlayerChoice.Quit) {
-        return true;
+      choice = player.handleRoll(shaker.clone());
+      if (choice.getFollowUpAction() == PlayerRollChoice.Action.QUIT) {
+        return choice;
       }
 
-      if (Score.getNonScoringDice(selection.getDice()).size() > 0) {
-        throw new RuntimeException(player.getName() + " caught cheating!");
+      if (!this.checkRoll(choice, shaker)) {
+        throw new RuntimeException("Player caught cheating!");
       }
 
-      if (selection.size() < 1) {
-        this.output.war("Your turn is over now.");
-        result = PlayerChoice.Pass;
-      }
+      shaker.remove(choice.getSelectedDice().getDice());
+      score += Score.getScore(choice.getSelectedDice().getDice());
 
-      score += Score.getScore(selection.getDice());
-
-      if (result != PlayerChoice.Pass) {
-        this.output.inf("Score so far: " + score);
+      if (choice.getFollowUpAction() != PlayerRollChoice.Action.PASS) {
+        this.output.announceCurrentScore(score);
       }
-    } while (result == PlayerChoice.Roll);
+    } while (choice.getFollowUpAction() == PlayerRollChoice.Action.ROLL);
 
     // Don't score fails.
-    if (selection.size() > 0) {
+    if (choice.getSelectedDice().size() > 0) {
       player.addToScore(score);
     }
     this.output.updateScoreboard(this.players);
 
-    return false;
+    return choice;
+  }
+
+  /**
+   * 
+   * @param choice
+   * @param rolledDice
+   * @param selectedDice
+   * @return Whether roll is valid.
+   */
+  private Boolean checkRoll(PlayerRollChoice choice, DiceContainer rolledDice) {
+
+    if (Score.getNonScoringDice(choice.getSelectedDice().getDice()).size() > 0) {
+      return false;
+    }
+
+    if (choice.getSelectedDice().size() < 1) {
+      this.output.war("Your turn is over now.");
+      choice.setFollowUpAction(PlayerRollChoice.Action.PASS);
+    }
+
+    // TODO add plausibility check
+
+    return true;
   }
 }

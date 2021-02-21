@@ -10,18 +10,21 @@ import engine.DiceContainer;
 public interface PlayerInterface {
 
   public abstract void addToScore(Integer increment);
-  public abstract void setScore(Integer newScore);
-  public abstract String getName();
-  public abstract Integer getScore();
 
-  // TODO remove. this ain't needed anymore
-  public abstract Boolean isHuman();
+  public abstract void setScore(Integer newScore);
+
+  public abstract String getName();
+
+  public abstract Integer getScore();
 
   /**
    * Handle a roll. The player is supposed to select dice from the roll.
-   * @param rolledDice The dice to select from.
+   * 
+   * You should definitely make sure that the selected dice are plausible.
+   * 
+   * @param rolledDice   The dice to select from.
    * @param selectedDice The selected dice.
    * @return The choice of the player on how to proceed.
    */
-  public abstract Game.PlayerChoice handleRoll (DiceContainer rolledDice, DiceContainer selectedDice);
+  public abstract Game.PlayerRollChoice handleRoll(DiceContainer rolledDice);
 }

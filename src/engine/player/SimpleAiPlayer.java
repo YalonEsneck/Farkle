@@ -12,11 +12,9 @@ public class SimpleAiPlayer extends BasePlayer {
     super(name, output);
   }
 
-  public Boolean isHuman() {
-    return false;
-  }
+  public Game.PlayerRollChoice handleRoll(DiceContainer rolledDice) {
+    DiceContainer selectedDice = new DiceContainer();
 
-  public Game.PlayerChoice handleRoll(DiceContainer rolledDice, DiceContainer selectedDice) {
     this.output.inf("Player " + this.getName() + " cast: " + rolledDice.toString());
     try {
       TimeUnit.MILLISECONDS.sleep(500);
@@ -44,7 +42,7 @@ public class SimpleAiPlayer extends BasePlayer {
       } catch (InterruptedException e) {
         Thread.currentThread().interrupt();
       }
-      return Game.PlayerChoice.Roll;
+      return new Game.PlayerRollChoice(Game.PlayerRollChoice.Action.ROLL, selectedDice);
     }
     this.output.inf(this.getName() + ": `I'll pass.`");
     try {
@@ -53,6 +51,6 @@ public class SimpleAiPlayer extends BasePlayer {
       Thread.currentThread().interrupt();
     }
 
-    return Game.PlayerChoice.Pass;
+    return new Game.PlayerRollChoice(Game.PlayerRollChoice.Action.PASS, selectedDice);
   }
 }
