@@ -9,13 +9,13 @@ import engine.Game;
  */
 public interface PlayerInterface {
 
-  public abstract void addToScore(Integer increment);
+  void addToScore(Integer increment);
 
-  public abstract void setScore(Integer newScore);
+  void setScore(Integer newScore);
 
-  public abstract String getName();
+  String getName();
 
-  public abstract Integer getScore();
+  Integer getScore();
 
   /**
    * Handle a roll. The player is supposed to select dice from the roll.
@@ -23,8 +23,7 @@ public interface PlayerInterface {
    * You should definitely make sure that the selected dice are plausible.
    * 
    * @param rolledDice   The dice to select from.
-   * @param selectedDice The selected dice.
    * @return The choice of the player on how to proceed.
    */
-  public abstract Game.PlayerRollChoice handleRoll(DiceContainer rolledDice);
+  Game.PlayerRollChoice handleRoll(DiceContainer rolledDice);
 }
