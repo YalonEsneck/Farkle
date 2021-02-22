@@ -10,7 +10,7 @@ public interface UserInterface {
   class PlayerAction {
     public enum Type {
       SELECT, UNSELECT, QUIT, PASS, ROLL
-    };
+    }
 
     private final Type type;
     private final DiceContainer selectedDice;
@@ -35,7 +35,7 @@ public interface UserInterface {
       }
       return this.selectedDice;
     }
-  };
+  }
 
   void announceCurrentScore(Integer score);
 
