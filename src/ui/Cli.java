@@ -1,12 +1,12 @@
 package ui;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 import engine.Dice;
 import engine.DiceContainer;
 import engine.player.PlayerInterface;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class Cli implements UserInterface {
 

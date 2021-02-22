@@ -1,11 +1,11 @@
 package engine.player;
 
-import java.util.concurrent.TimeUnit;
-
 import engine.DiceContainer;
 import engine.Game;
 import engine.Score;
 import ui.UserInterface;
+
+import java.util.concurrent.TimeUnit;
 
 public class SimpleAiPlayer extends BasePlayer {
   public SimpleAiPlayer(String name, UserInterface ui) {

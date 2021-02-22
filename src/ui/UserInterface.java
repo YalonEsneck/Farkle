@@ -1,19 +1,19 @@
 package ui;
 
-import java.util.List;
-
 import engine.DiceContainer;
 import engine.player.PlayerInterface;
 
+import java.util.List;
+
 public interface UserInterface {
 
-  public static class PlayerAction {
-    public static enum Type {
+  class PlayerAction {
+    public enum Type {
       SELECT, UNSELECT, QUIT, PASS, ROLL
-    };
+    }
 
-    private Type type;
-    private DiceContainer selectedDice;
+    private final Type type;
+    private final DiceContainer selectedDice;
 
     public PlayerAction(Type type) {
       this.type = type;
@@ -35,33 +35,33 @@ public interface UserInterface {
       }
       return this.selectedDice;
     }
-  };
+  }
 
-  public abstract void announceCurrentScore(Integer score);
+  void announceCurrentScore(Integer score);
 
-  public abstract void announcePlayers(List<PlayerInterface> players);
+  void announcePlayers(List<PlayerInterface> players);
 
-  public abstract void announceTurn(PlayerInterface player);
+  void announceTurn(PlayerInterface player);
 
-  public abstract void announceVictoryConditions(Integer maxScore);
+  void announceVictoryConditions(Integer maxScore);
 
-  public abstract void announceVictor(PlayerInterface player);
+  void announceVictor(PlayerInterface player);
 
-  public abstract void castDice(DiceContainer dice);
+  void castDice(DiceContainer dice);
 
-  public abstract Boolean confirmYieldingTurn();
+  Boolean confirmYieldingTurn();
 
-  public abstract void noDiceSelected();
+  void noDiceSelected();
 
-  public abstract void passes(PlayerInterface player);
+  void passes(PlayerInterface player);
 
-  public abstract PlayerAction promptForAction(DiceContainer rolledDice, DiceContainer selectedDice);
+  PlayerAction promptForAction(DiceContainer rolledDice, DiceContainer selectedDice);
 
-  public abstract void rollsAgain(PlayerInterface player);
+  void rollsAgain(PlayerInterface player);
 
-  public abstract void selectedDice(DiceContainer dice);
+  void selectedDice(DiceContainer dice);
 
-  public abstract void updateScoreboard(List<PlayerInterface> players);
+  void updateScoreboard(List<PlayerInterface> players);
 
-  public abstract void unselectNonScoringDice(DiceContainer nonScoringDice);
+  void unselectNonScoringDice(DiceContainer nonScoringDice);
 }
