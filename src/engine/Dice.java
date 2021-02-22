@@ -1,10 +1,13 @@
 package engine;
 
+import java.util.Random;
+
 public class Dice {
   private Integer face = 0;
 
   public Dice roll() {
-    this.face = 1 + (int)(Math.random() * 5);
+    Random numberGenerator = new Random();
+    this.face = 1 + (numberGenerator.nextInt() * 5);
     return this;
   }
 

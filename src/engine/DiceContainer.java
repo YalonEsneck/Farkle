@@ -6,7 +6,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class DiceContainer {
-  protected List<Dice> dice = new ArrayList<Dice>();
+  protected List<Dice> dice = new ArrayList<>();
 
   public void generateNewDice() {
     for (int i = 0; i < 6; i++) {
@@ -41,7 +41,7 @@ public class DiceContainer {
   }
 
   public Optional<Dice> findFirst(Integer face) {
-    return this.dice.stream().filter(element -> element.getFace() == face).findFirst();
+    return this.dice.stream().filter(element -> element.getFace().equals(face)).findFirst();
   }
 
   public void remove(List<Dice> dice) {
