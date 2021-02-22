@@ -1,9 +1,9 @@
 package engine;
 
-import java.util.stream.Collectors;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class DiceContainer {
   protected List<Dice> dice = new ArrayList<Dice>();

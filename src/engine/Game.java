@@ -1,9 +1,9 @@
 package engine;
 
-import java.util.List;
-
 import engine.player.PlayerInterface;
 import ui.UserInterface;
+
+import java.util.List;
 
 public class Game {
   private List<PlayerInterface> players;

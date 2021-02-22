@@ -1,8 +1,8 @@
 package ui;
 
-import java.util.List;
-
 import engine.player.PlayerInterface;
+
+import java.util.List;
 
 public class Gui implements UserInterface {
 

@@ -1,7 +1,7 @@
 package engine.player;
 
-import engine.Game;
 import engine.DiceContainer;
+import engine.Game;
 
 /**
  * Only classes implementing this interface will be accepted by Game as valid

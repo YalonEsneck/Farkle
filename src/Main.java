@@ -1,11 +1,10 @@
-import java.util.Arrays;
-import java.util.List;
-
+import engine.Game;
 import engine.player.HumanPlayer;
-import engine.player.PlayerInterface;
 import engine.player.SimpleAiPlayer;
 import ui.Cli;
-import engine.Game;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class Main {
   public static void main(String[] args) {
